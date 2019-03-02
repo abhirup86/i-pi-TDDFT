@@ -1,0 +1,51 @@
+SolutionMethod      diagon
+MaxSCFIterations 50 
+#TD.MiddlePointEvolve  T
+TD.LengthTimeStep     0.025 fs
+TD.WriteProjectionStep 1
+TD.MaxSCFIterations 100
+TD.FastEvolve F
+TD.DM.Tolerance 1E-4
+TD.DM.MixingWeight 0.25
+TD.WavefunctionOntheFly
+SCF.Mixer.Method linear
+DM.AllowReuse T
+SCF.Converge.H F
+DM.AllowExtrapolation F
+
+
+#SCF.Mix density
+%block TD.LightEnvelope
+1.0  20.0  7.0  0.0  1000.0
+%endblock TD.LightEnvelope
+
+WriteMDHistory .true.
+LongOutput
+SCFMustConverge 
+
+MD.TypeOfRun forces
+Master.interface socket
+Master.code i-pi
+Master.socketType inet
+Master.address 127.0.0.1   # In this case, Unix socket name, not host name (confusing!)
+Master.port 30000          # Irrelevant for unix sockets
+
+MD.FinalTimeStep      2000
+MD.LengthTimeStep     0.00 fs
+MD.InitialTemperature 0 K
+
+PAO.BasisSize DZP 
+MeshCutoff 75 Ry
+
+%block ExternalElectricField
+0.0 0.0 0.0 Ry/Bohr/e
+%endblock ExternalElectricField
+
+SlabDipoleCorrection F
+
+%block kgrid_Monkhorst_Pack
+1 0 0
+0 1 0
+0 0 1
+%endblock kgrid_Monkhorst_Pack
+%include structure.fdf

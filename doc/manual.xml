@@ -1,0 +1,537 @@
+<simulation verbosity=''>
+   <help> This is the top level class that deals with the running of the simulation, including holding the simulation specific properties such as the time step and outputting the data. </help>
+   <verbosity_help> The level of output on stdout. </verbosity_help>
+   <verbosity_default> low </verbosity_default>
+   <verbosity_options> ['quiet', 'low', 'medium', 'high', 'debug'] </verbosity_options>
+   <verbosity_dtype> string </verbosity_dtype>
+   <total_time>
+      <help> The maximum wall clock time (in seconds). </help>
+      <default> 0 </default>
+      <dtype> float </dtype>
+   </total_time>
+   <step>
+      <help> The current simulation time step. </help>
+      <default> 0 </default>
+      <dtype> integer </dtype>
+   </step>
+   <initialize nbeads=''>
+      <help> Specifies the number of beads, and how the system should be initialized. </help>
+      <nbeads_help> The number of beads. Will override any provision from inside the initializer. A ring polymer contraction scheme is used to scale down the number of beads if required. If instead the number of beads is scaled up, higher normal modes will be initialized to zero. </nbeads_help>
+      <nbeads_dtype> integer </nbeads_dtype>
+      <cell mode=''>
+         <help> Initializes the configuration of the cell. Will take a 'units' attribute of dimension 'length' </help>
+         <mode_help> This decides whether the system box is created from a cell parameter matrix, or from the side lengths and angles between them. If 'mode' is 'manual', then 'cell' takes a 9-elements vector containing the cell matrix (row-major). If 'mode' is 'abcABC', then 'cell' takes an array of 6 floats, the first three being the length of the sides of the system parallelopiped, and the last three being the angles (in degrees) between those sides. Angle A corresponds to the angle between sides b and c, and so on for B and C. If mode is 'abc', then this is the same as for 'abcABC', but the cell is assumed to be orthorhombic. 'pdb' and 'chk' read the cell from a PDB or a checkpoint file, respectively. </mode_help>
+         <mode_default> manual </mode_default>
+         <mode_options> ['manual', 'pdb', 'chk', 'abc', 'abcABC'] </mode_options>
+         <dtype> string </dtype>
+         <mode_dtype> string </mode_dtype>
+      </cell>
+      <labels index='' bead='' mode=''>
+         <help> Initializes atomic labels </help>
+         <index_help> The index of the atom for which the value will be set. If a negative value is specified, then all atoms are assumed. </index_help>
+         <bead_help> The index of the bead for which the value will be set. If a negative value is specified, then all beads are assumed. </bead_help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. </mode_help>
+         <index_default> -1 </index_default>
+         <bead_default> -1 </bead_default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['manual', 'xyz', 'pdb', 'chk'] </mode_options>
+         <dtype> string </dtype>
+         <index_dtype> integer </index_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <mode_dtype> string </mode_dtype>
+      </labels>
+      <file mode=''>
+         <help> Initializes everything possible for the given mode. Will take a 'units' attribute of dimension 'length'. The unit conversion will only be applied to the positions and cell parameters. </help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. </mode_help>
+         <mode_default> chk </mode_default>
+         <mode_options> ['xyz', 'pdb', 'chk'] </mode_options>
+         <dtype> string </dtype>
+         <mode_dtype> string </mode_dtype>
+      </file>
+      <positions index='' bead='' mode=''>
+         <help> Initializes atomic positions. Will take a 'units' attribute of dimension 'length' </help>
+         <index_help> The index of the atom for which the value will be set. If a negative value is specified, then all atoms are assumed. </index_help>
+         <bead_help> The index of the bead for which the value will be set. If a negative value is specified, then all beads are assumed. </bead_help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. </mode_help>
+         <index_default> -1 </index_default>
+         <bead_default> -1 </bead_default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['manual', 'xyz', 'pdb', 'chk'] </mode_options>
+         <dtype> string </dtype>
+         <index_dtype> integer </index_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <mode_dtype> string </mode_dtype>
+      </positions>
+      <momenta index='' bead='' mode=''>
+         <help> Initializes atomic momenta. Will take a 'units' attribute of dimension 'momentum' </help>
+         <index_help> The index of the atom for which the value will be set. If a negative value is specified, then all atoms are assumed. </index_help>
+         <bead_help> The index of the bead for which the value will be set. If a negative value is specified, then all beads are assumed. </bead_help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. 'thermal' means that the data is to be generated from a Maxwell-Boltzmann distribution at the given temperature. </mode_help>
+         <index_default> -1 </index_default>
+         <bead_default> -1 </bead_default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['manual', 'xyz', 'pdb', 'chk', 'thermal'] </mode_options>
+         <dtype> string </dtype>
+         <index_dtype> integer </index_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <mode_dtype> string </mode_dtype>
+      </momenta>
+      <velocities index='' bead='' mode=''>
+         <help> Initializes atomic velocities. Will take a 'units' attribute of dimension 'velocity' </help>
+         <index_help> The index of the atom for which the value will be set. If a negative value is specified, then all atoms are assumed. </index_help>
+         <bead_help> The index of the bead for which the value will be set. If a negative value is specified, then all beads are assumed. </bead_help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. 'thermal' means that the data is to be generated from a Maxwell-Boltzmann distribution at the given temperature. </mode_help>
+         <index_default> -1 </index_default>
+         <bead_default> -1 </bead_default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['manual', 'xyz', 'pdb', 'chk', 'thermal'] </mode_options>
+         <dtype> string </dtype>
+         <index_dtype> integer </index_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <mode_dtype> string </mode_dtype>
+      </velocities>
+      <masses index='' bead='' mode=''>
+         <help> Initializes atomic masses. Will take a 'units' attribute of dimension 'mass' </help>
+         <index_help> The index of the atom for which the value will be set. If a negative value is specified, then all atoms are assumed. </index_help>
+         <bead_help> The index of the bead for which the value will be set. If a negative value is specified, then all beads are assumed. </bead_help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. </mode_help>
+         <index_default> -1 </index_default>
+         <bead_default> -1 </bead_default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['manual', 'xyz', 'pdb', 'chk'] </mode_options>
+         <dtype> string </dtype>
+         <index_dtype> integer </index_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <mode_dtype> string </mode_dtype>
+      </masses>
+      <gle mode=''>
+         <help> Initializes the additional momenta in a GLE thermostat. </help>
+         <mode_help> 'chk' stands for initialization from a checkpoint file. 'manual' means that the value to initialize from is giving explicitly as a vector. </mode_help>
+         <mode_default> manual </mode_default>
+         <mode_options> ['chk', 'manual'] </mode_options>
+         <dtype> string </dtype>
+         <mode_dtype> string </mode_dtype>
+      </gle>
+   </initialize>
+   <beads natoms='' nbeads=''>
+      <help> Describes the bead configurations in a path integral simulation. </help>
+      <natoms_help> The number of atoms. </natoms_help>
+      <nbeads_help> The number of beads. </nbeads_help>
+      <natoms_default> 0 </natoms_default>
+      <nbeads_default> 0 </nbeads_default>
+      <natoms_dtype> integer </natoms_dtype>
+      <nbeads_dtype> integer </nbeads_dtype>
+      <q units='' shape=''>
+         <help> The positions of the beads. In an array of size [nbeads, 3*natoms]. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <shape_help> The shape of the array. </shape_help>
+         <dimension> length </dimension>
+         <units_default>  </units_default>
+         <shape_default> (0,) </shape_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+         <shape_dtype> tuple </shape_dtype>
+      </q>
+      <p units='' shape=''>
+         <help> The momenta of the beads. In an array of size [nbeads, 3*natoms]. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <shape_help> The shape of the array. </shape_help>
+         <dimension> momentum </dimension>
+         <units_default>  </units_default>
+         <shape_default> (0,) </shape_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+         <shape_dtype> tuple </shape_dtype>
+      </p>
+      <m units='' shape=''>
+         <help> The masses of the atoms, in the format [m1, m2, ... ]. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <shape_help> The shape of the array. </shape_help>
+         <dimension> mass </dimension>
+         <units_default>  </units_default>
+         <shape_default> (0,) </shape_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+         <shape_dtype> tuple </shape_dtype>
+      </m>
+      <names shape=''>
+         <help> The names of the atoms, in the format [name1, name2, ... ]. </help>
+         <shape_help> The shape of the array. </shape_help>
+         <shape_default> (0,) </shape_default>
+         <dtype> string </dtype>
+         <shape_dtype> tuple </shape_dtype>
+      </names>
+   </beads>
+   <total_steps>
+      <help> The total number of steps that will be done. If 'step' is equal to or greater than 'total_steps', then the simulation will finish. </help>
+      <default> 1000 </default>
+      <dtype> integer </dtype>
+   </total_steps>
+   <normal_modes units='' shape='' mode='' transform=''>
+      <help> Deals with the normal mode transformations, including the adjustment of bead masses to give the desired ring polymer normal mode frequencies if appropriate. Takes as arguments frequencies, of which different numbers must be specified and which are used to scale the normal mode frequencies in different ways depending on which 'mode' is specified. </help>
+      <units_help> The units the input data is given in. </units_help>
+      <shape_help> The shape of the array. </shape_help>
+      <mode_help> Specifies the technique to be used to calculate the dynamical masses. 'rpmd' simply assigns the bead masses the physical mass. 'manual' sets all the normal mode frequencies except the centroid normal mode manually. 'pa-cmd' takes an argument giving the frequency to set all the non-centroid normal modes to. 'wmax-cmd' is similar to 'pa-cmd', except instead of taking one argument it takes two ([wmax,wtarget]). The lowest-lying normal mode will be set to wtarget for a free particle, and all the normal modes will coincide at frequency wmax.  </mode_help>
+      <transform_help> Specifies whether to calculate the normal mode transform using a fast Fourier transform or a matrix multiplication. For small numbers of beads the matrix multiplication may be faster. </transform_help>
+      <dimension> frequency </dimension>
+      <default> [ ] </default>
+      <units_default>  </units_default>
+      <shape_default> (0,) </shape_default>
+      <mode_default> rpmd </mode_default>
+      <transform_default> fft </transform_default>
+      <mode_options> ['pa-cmd', 'wmax-cmd', 'manual', 'rpmd'] </mode_options>
+      <transform_options> ['fft', 'matrix'] </transform_options>
+      <dtype> float </dtype>
+      <units_dtype> string </units_dtype>
+      <shape_dtype> tuple </shape_dtype>
+      <mode_dtype> string </mode_dtype>
+      <transform_dtype> string </transform_dtype>
+   </normal_modes>
+   <cell units='' shape=''>
+      <help> Deals with the cell parameters. Takes as array which can be used to initialize the cell vector matrix. </help>
+      <units_help> The units the input data is given in. </units_help>
+      <shape_help> The shape of the array. </shape_help>
+      <dimension> length </dimension>
+      <default>
+         [0. 0. 0. 0. 0. 0. 0. 0. 0.]
+      </default>
+      <units_default>  </units_default>
+      <shape_default> (0,) </shape_default>
+      <dtype> float </dtype>
+      <units_dtype> string </units_dtype>
+      <shape_dtype> tuple </shape_dtype>
+   </cell>
+   <forces>
+      <help> Deals with creating all the necessary forcefield objects. </help>
+      <socket weight='' mode='' pbc='' nbeads=''>
+         <help> Deals with the assigning of force calculation jobs to different driver codes, and collecting the data, using a socket for the data communication. </help>
+         <weight_help> A scaling factor for this forcefield, to be applied before adding the force calculated by this forcefield to the total force. </weight_help>
+         <mode_help> Specifies whether the driver interface will listen onto a internet socket [inet] or onto a unix socket [unix]. </mode_help>
+         <pbc_help> Applies periodic boundary conditions to the atoms coordinates before passing them on to the driver code. </pbc_help>
+         <nbeads_help> If the forcefield is to be evaluated on a contracted ring polymer, this gives the number of beads that are used. If not specified, the forcefield will be evaluated on the full ring polymer. </nbeads_help>
+         <weight_default> 1.0 </weight_default>
+         <mode_default> inet </mode_default>
+         <pbc_default> True </pbc_default>
+         <nbeads_default> 0 </nbeads_default>
+         <mode_options> ['unix', 'inet'] </mode_options>
+         <weight_dtype> float </weight_dtype>
+         <mode_dtype> string </mode_dtype>
+         <pbc_dtype> boolean </pbc_dtype>
+         <nbeads_dtype> integer </nbeads_dtype>
+         <latency>
+            <help> This gives the number of seconds between each check for new clients. </help>
+            <default> 0.001 </default>
+            <dtype> float </dtype>
+         </latency>
+         <slots>
+            <help> This gives the number of client codes that can queue at any one time. </help>
+            <default> 4 </default>
+            <dtype> integer </dtype>
+         </slots>
+         <port>
+            <help> This gives the port number that defines the socket. </help>
+            <default> 65535 </default>
+            <dtype> integer </dtype>
+         </port>
+         <timeout>
+            <help> This gives the number of seconds before assuming a calculation has died. If 0 there is no timeout. </help>
+            <default> 0.0 </default>
+            <dtype> float </dtype>
+         </timeout>
+         <address>
+            <help> This gives the server address that the socket will run on. </help>
+            <default> localhost </default>
+            <dtype> string </dtype>
+         </address>
+      </socket>
+   </forces>
+   <output prefix=''>
+      <help> This class defines how properties, trajectories and checkpoints should be output during the simulation. May contain zero, one or many instances of properties, trajectory or checkpoint tags, each giving instructions on how one output file should be created and managed. </help>
+      <prefix_help> A string that will be prepended to each output file name. The file name is given by 'prefix'.'filename' + format_specifier. The format specifier may also include a number if multiple similar files are output. </prefix_help>
+      <prefix_default> i-pi </prefix_default>
+      <prefix_dtype> string </prefix_dtype>
+      <checkpoint stride='' overwrite='' filename=''>
+         <help> Each of the checkpoint tags specify how to create a checkpoint file, which can be used to restart a simulation.  </help>
+         <stride_help> The number of steps between successive writes. </stride_help>
+         <overwrite_help> This specifies whether or not each consecutive checkpoint file will overwrite the old one. </overwrite_help>
+         <filename_help> A string to specify the name of the file that is output. The file name is given by 'prefix'.'filename' + format_specifier. The format specifier may also include a number if multiple similar files are output. </filename_help>
+         <stride_default> 1 </stride_default>
+         <overwrite_default> True </overwrite_default>
+         <filename_default> restart </filename_default>
+         <dtype> integer </dtype>
+         <stride_dtype> integer </stride_dtype>
+         <overwrite_dtype> boolean </overwrite_dtype>
+         <filename_dtype> string </filename_dtype>
+      </checkpoint>
+      <trajectory format='' filename='' bead='' stride='' flush='' cell_units=''>
+         <help> Each of the trajectory tags specify how to create a trajectory file, containing a list of per-atom coordinate properties.  </help>
+         <format_help> The output file format. </format_help>
+         <filename_help> A string to specify the name of the file that is output. The file name is given by 'prefix'.'filename' + format_specifier. The format specifier may also include a number if multiple similar files are output. </filename_help>
+         <bead_help> Print out only the specified bead. A negative value means print all. </bead_help>
+         <stride_help> The number of steps between successive writes. </stride_help>
+         <flush_help> How often should streams be flushed. 1 means each time, zero means never. </flush_help>
+         <cell_units_help> The units for the cell dimensions. </cell_units_help>
+         <format_default> xyz </format_default>
+         <filename_default> traj </filename_default>
+         <bead_default> -1 </bead_default>
+         <stride_default> 1 </stride_default>
+         <flush_default> 1 </flush_default>
+         <cell_units_default>  </cell_units_default>
+         <format_options> ['xyz', 'pdb'] </format_options>
+         <dtype> string </dtype>
+         <format_dtype> string </format_dtype>
+         <filename_dtype> string </filename_dtype>
+         <bead_dtype> integer </bead_dtype>
+         <stride_dtype> integer </stride_dtype>
+         <flush_dtype> integer </flush_dtype>
+         <cell_units_dtype> string </cell_units_dtype>
+      </trajectory>
+      <properties stride='' shape='' flush='' filename=''>
+         <help> Each of the properties tags specify how to create a file in which one or more properties are written, one line per frame.  </help>
+         <stride_help> The number of steps between successive writes. </stride_help>
+         <shape_help> The shape of the array. </shape_help>
+         <flush_help> How often should streams be flushed. 1 means each time, zero means never. </flush_help>
+         <filename_help> A string to specify the name of the file that is output. The file name is given by 'prefix'.'filename' + format_specifier. The format specifier may also include a number if multiple similar files are output. </filename_help>
+         <stride_default> 1 </stride_default>
+         <shape_default> (0,) </shape_default>
+         <flush_default> 1 </flush_default>
+         <filename_default> out </filename_default>
+         <dtype> string </dtype>
+         <stride_dtype> integer </stride_dtype>
+         <shape_dtype> tuple </shape_dtype>
+         <flush_dtype> integer </flush_dtype>
+         <filename_dtype> string </filename_dtype>
+      </properties>
+   </output>
+   <prng>
+      <help> Deals with the pseudo-random number generator. </help>
+      <has_gauss>
+         <help> Determines whether there is a stored gaussian number or not. A value of 0 means there is none stored. </help>
+         <default> 0 </default>
+         <dtype> integer </dtype>
+      </has_gauss>
+      <state shape=''>
+         <help> Gives the state vector for the random number generator. Avoid directly modifying this unless you are very familiar with the inner workings of the algorithm used. </help>
+         <shape_help> The shape of the array. </shape_help>
+         <shape_default> (0,) </shape_default>
+         <dtype> integer </dtype>
+         <shape_dtype> tuple </shape_dtype>
+      </state>
+      <seed>
+         <help> This is the seed number used to generate the initial state of the random number generator. </help>
+         <default> 12345 </default>
+         <dtype> integer </dtype>
+      </seed>
+      <set_pos>
+         <help> Gives the position in the state array that the random number generator is reading from. </help>
+         <default> 624 </default>
+         <dtype> integer </dtype>
+      </set_pos>
+      <gauss>
+         <help> The stored Gaussian number. </help>
+         <default> 0.0 </default>
+         <dtype> float </dtype>
+      </gauss>
+   </prng>
+   <ensemble mode=''>
+      <help> Holds all the information that is ensemble specific, such as the temperature and the external pressure, and the thermostats and barostats that control it. </help>
+      <mode_help> The ensemble that will be sampled during the simulation. 'replay' means that a simulation is restarted from a previous simulation. </mode_help>
+      <mode_options> ['nve', 'nvt', 'npt', 'replay'] </mode_options>
+      <mode_dtype> string </mode_dtype>
+      <barostat mode=''>
+         <help> Simulates an external pressure bath. </help>
+         <mode_help> The type of barostat.  Currently, only a 'isotropic' barostat is implemented, that combines
+                                   ideas from the Bussi-Zykova-Parrinello barostat for classical MD with ideas from the
+                                   Martyna-Hughes-Tuckerman centroid barostat for PIMD; see Ceriotti, More, Manolopoulos, Comp. Phys. Comm. 2013 for
+                                   implementation details. </mode_help>
+         <mode_default> dummy </mode_default>
+         <mode_options> ['dummy', 'isotropic'] </mode_options>
+         <mode_dtype> string </mode_dtype>
+         <tau units=''>
+            <help> The time constant associated with the dynamics of the piston. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <dimension> time </dimension>
+            <default> 1.0 </default>
+            <units_default>  </units_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+         </tau>
+         <thermostat mode=''>
+            <help> The thermostat for the cell. Keeps the cell velocity distribution at the correct temperature. Note that the 'pile_l', 'pile_g', 'nm_gle' and 'nm_gle_g' options will not work for this thermostat. </help>
+            <mode_help> The style of thermostatting. 'langevin' specifies a white noise langevin equation to be attached to the cartesian representation of the momenta. 'svr' attaches a velocity rescaling thermostat to the cartesian representation of the momenta. Both 'pile_l' and 'pile_g' attaches a white noise langevin thermostat to the normal mode representation, with 'pile_l' attaching a local langevin thermostat to the centroid mode and 'pile_g' instead attaching a global velocity rescaling thermostat. 'gle' attaches a coloured noise langevin thermostat to the cartesian representation of the momenta, 'nm_gle' attaches a coloured noise langevin thermostat to the normal mode representation of the momenta and a langevin thermostat to the centroid and 'nm_gle_g' attaches a gle thermostat to the normal modes and a svr thermostat to the centroid. </mode_help>
+            <mode_options> ['', 'langevin', 'svr', 'pile_l', 'pile_g', 'gle', 'nm_gle', 'nm_gle_g'] </mode_options>
+            <mode_dtype> string </mode_dtype>
+            <A units='' shape=''>
+               <help> The friction matrix for GLE thermostats. </help>
+               <units_help> The units the input data is given in. </units_help>
+               <shape_help> The shape of the array. </shape_help>
+               <dimension> frequency </dimension>
+               <units_default>  </units_default>
+               <shape_default> (0,) </shape_default>
+               <dtype> float </dtype>
+               <units_dtype> string </units_dtype>
+               <shape_dtype> tuple </shape_dtype>
+            </A>
+            <tau units=''>
+               <help> The friction coefficient for white noise thermostats. </help>
+               <units_help> The units the input data is given in. </units_help>
+               <dimension> time </dimension>
+               <default> 0.0 </default>
+               <units_default>  </units_default>
+               <dtype> float </dtype>
+               <units_dtype> string </units_dtype>
+            </tau>
+            <C units='' shape=''>
+               <help> The covariance matrix for GLE thermostats. </help>
+               <units_help> The units the input data is given in. </units_help>
+               <shape_help> The shape of the array. </shape_help>
+               <dimension> temperature </dimension>
+               <units_default>  </units_default>
+               <shape_default> (0,) </shape_default>
+               <dtype> float </dtype>
+               <units_dtype> string </units_dtype>
+               <shape_dtype> tuple </shape_dtype>
+            </C>
+            <ethermo units=''>
+               <help> The initial value of the thermostat energy. Used when the simulation is restarted to guarantee continuity of the conserved quantity. </help>
+               <units_help> The units the input data is given in. </units_help>
+               <dimension> energy </dimension>
+               <default> 0.0 </default>
+               <units_default>  </units_default>
+               <dtype> float </dtype>
+               <units_dtype> string </units_dtype>
+            </ethermo>
+            <s units='' shape=''>
+               <help> Input values for the additional momenta in GLE. </help>
+               <units_help> The units the input data is given in. </units_help>
+               <shape_help> The shape of the array. </shape_help>
+               <dimension> ms-momentum </dimension>
+               <units_default>  </units_default>
+               <shape_default> (0,) </shape_default>
+               <dtype> float </dtype>
+               <units_dtype> string </units_dtype>
+               <shape_dtype> tuple </shape_dtype>
+            </s>
+            <pile_scale>
+               <help> Scaling for the PILE damping relative to the critical damping. </help>
+               <default> 1.0 </default>
+               <dtype> float </dtype>
+            </pile_scale>
+         </thermostat>
+         <p units='' shape=''>
+            <help> Momentum (or momenta) of the piston. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <shape_help> The shape of the array. </shape_help>
+            <dimension> momentum </dimension>
+            <units_default>  </units_default>
+            <shape_default> (0,) </shape_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+            <shape_dtype> tuple </shape_dtype>
+         </p>
+      </barostat>
+      <thermostat mode=''>
+         <help> The thermostat for the atoms, keeps the atom velocity distribution at the correct temperature. </help>
+         <mode_help> The style of thermostatting. 'langevin' specifies a white noise langevin equation to be attached to the cartesian representation of the momenta. 'svr' attaches a velocity rescaling thermostat to the cartesian representation of the momenta. Both 'pile_l' and 'pile_g' attaches a white noise langevin thermostat to the normal mode representation, with 'pile_l' attaching a local langevin thermostat to the centroid mode and 'pile_g' instead attaching a global velocity rescaling thermostat. 'gle' attaches a coloured noise langevin thermostat to the cartesian representation of the momenta, 'nm_gle' attaches a coloured noise langevin thermostat to the normal mode representation of the momenta and a langevin thermostat to the centroid and 'nm_gle_g' attaches a gle thermostat to the normal modes and a svr thermostat to the centroid. </mode_help>
+         <mode_options> ['', 'langevin', 'svr', 'pile_l', 'pile_g', 'gle', 'nm_gle', 'nm_gle_g'] </mode_options>
+         <mode_dtype> string </mode_dtype>
+         <A units='' shape=''>
+            <help> The friction matrix for GLE thermostats. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <shape_help> The shape of the array. </shape_help>
+            <dimension> frequency </dimension>
+            <units_default>  </units_default>
+            <shape_default> (0,) </shape_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+            <shape_dtype> tuple </shape_dtype>
+         </A>
+         <tau units=''>
+            <help> The friction coefficient for white noise thermostats. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <dimension> time </dimension>
+            <default> 0.0 </default>
+            <units_default>  </units_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+         </tau>
+         <C units='' shape=''>
+            <help> The covariance matrix for GLE thermostats. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <shape_help> The shape of the array. </shape_help>
+            <dimension> temperature </dimension>
+            <units_default>  </units_default>
+            <shape_default> (0,) </shape_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+            <shape_dtype> tuple </shape_dtype>
+         </C>
+         <ethermo units=''>
+            <help> The initial value of the thermostat energy. Used when the simulation is restarted to guarantee continuity of the conserved quantity. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <dimension> energy </dimension>
+            <default> 0.0 </default>
+            <units_default>  </units_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+         </ethermo>
+         <s units='' shape=''>
+            <help> Input values for the additional momenta in GLE. </help>
+            <units_help> The units the input data is given in. </units_help>
+            <shape_help> The shape of the array. </shape_help>
+            <dimension> ms-momentum </dimension>
+            <units_default>  </units_default>
+            <shape_default> (0,) </shape_default>
+            <dtype> float </dtype>
+            <units_dtype> string </units_dtype>
+            <shape_dtype> tuple </shape_dtype>
+         </s>
+         <pile_scale>
+            <help> Scaling for the PILE damping relative to the critical damping. </help>
+            <default> 1.0 </default>
+            <dtype> float </dtype>
+         </pile_scale>
+      </thermostat>
+      <timestep units=''>
+         <help> The time step. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <dimension> time </dimension>
+         <default> 1.0 </default>
+         <units_default>  </units_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+      </timestep>
+      <pressure units=''>
+         <help> The external pressure. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <dimension> pressure </dimension>
+         <default> 1.0 </default>
+         <units_default>  </units_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+      </pressure>
+      <replay_file mode=''>
+         <help> This describes the location to read a trajectory file from. </help>
+         <mode_help> The input data format. 'xyz' and 'pdb' stand for xyz and pdb input files respectively. 'chk' stands for initialization from a checkpoint file. </mode_help>
+         <default>  </default>
+         <mode_default> chk </mode_default>
+         <mode_options> ['xyz', 'pdb', 'chk'] </mode_options>
+         <dtype> string </dtype>
+         <mode_dtype> string </mode_dtype>
+      </replay_file>
+      <fixcom>
+         <help> This describes whether the centre of mass of the particles is fixed. </help>
+         <default> True </default>
+         <dtype> boolean </dtype>
+      </fixcom>
+      <temperature units=''>
+         <help> The temperature of the system. </help>
+         <units_help> The units the input data is given in. </units_help>
+         <dimension> temperature </dimension>
+         <default> 1.0 </default>
+         <units_default>  </units_default>
+         <dtype> float </dtype>
+         <units_dtype> string </units_dtype>
+      </temperature>
+   </ensemble>
+</simulation>
